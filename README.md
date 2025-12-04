@@ -25,18 +25,17 @@ In our approach, we consider as a _trip_ the subsequence of AIS locations betwee
 
 - A _stop_ indicates that the vessel remains stationary, i.e., its speed is <0.5 knots over a period of time. The starting location of such a stop (most typically in a port, but sometimes also at sea) marks the end of the current trip. Conversely, the last location in a stop signifies that the vessel has just departed on a new trip.
 
-- A _{communication gap_ occurs when no AIS location has been received recently,
-e.g., in the past 30 minutes. If such a gap occurs, the current trip is abruptly ended and a new trip will be assigned once communication with the vessel is resumed. 
+- A _communication gap_ occurs when no AIS location has been received recently, e.g., in the past 30 minutes. If such a gap occurs, the current trip is abruptly ended and a new trip will be assigned once communication with the vessel is resumed. 
 
-Assuming that original AIS data are stored in a CSV file (available in path ```RAW_AIS_FILE```) and the respective annotations are also in a CSV file (in path ```ANNOTATED_AIS_FILE```), our trip segmentation module can invoked as follows to produce a pandas DataFrame with the identified trips: 
+Assuming that original AIS data are stored in a CSV file (available in path ```RAW_AIS_FILE```) and the respective annotations are also in a CSV file (in path ```ANNOTATED_AIS_FILE```), our [trip segmentation module](```src/trip_segmentation.py```) can be invoked as follows in order to produce a pandas DataFrame with the identified trips: 
 
 ```
 df_all_trips = dataset2trips(RAW_AIS_FILE, ANNOTATED_AIS_FILE, MIN_GAP_SIZE=3600)
 ```
 
-where ```MIN_GAP_SIZE``` specifies the maximum allowed time interval (in seconds) with no positional report; if no signal is relayed for a period longer than this threshold, a new trip will be assigned.
+where ```MIN_GAP_SIZE``` specifies the maximum allowed time interval (in seconds) with no positional report; if no signal is relayed for a period longer than this threshold (e.g., ```3600``` seconds, i.e., one hour in this example), a new trip will be assigned once communication with the vessel is resumed.
 
-The assigned trip identifiers are concatenations of three components: the vessel's unique Maritime Mobile Service Identity (```MMSI```), the timestamp marking the start of the trip (UNIX epoch in seconds), and the the timestamp marking the end of the trip (also as UNIX epoch in seconds). For instance, identifier ```211178260_1706603252_1706624731``` concerns the trip of a vessel with MMSI ```211178260```, which started at 08:27:32 GMT on 30 January 2024 (epoch: 1706603252) and ended at 14:25:31 GMT the same day (epoch: 1706624731).
+The assigned trip identifiers are concatenations of three components: the vessel's unique Maritime Mobile Service Identity (```MMSI```), the timestamp marking the start of the trip (UNIX epoch in seconds), and the the timestamp marking the end of the trip (also as UNIX epoch in seconds). For instance, identifier ```211178260_1706603252_1706624731``` concerns the trip of a vessel with MMSI ```211178260```, which started at 08:27:32 GMT on 30 January 2024 (epoch: ```1706603252```) and ended at 14:25:31 GMT the same day (epoch: ```1706624731```).
 
 
 ## Graph generation
