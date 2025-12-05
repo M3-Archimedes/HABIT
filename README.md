@@ -3,6 +3,16 @@
 
 HABIT Framework  provides a valuable means to impute the missing trajectory segments by extracting, analyzing, and indexing such patterns over historical AIS data.
 HABIT provides  an efficient, data-driven and scalable approach for gap imputation relying on spatial aggregates of AIS positional reports computed over H3 hexagon cells. 
+## Installation 
+
+Pre-requisites:
+```
+! pip install shapely networkx h3 geopandas folium duckdb numpy==1.26.4 scikit-learn==1.6.1 seaborn setuptools matplotlib rtree ipykernel
+! cd ../habit; pip install -e .
+```
+If you are running this through a notebook, you might need to restart kernel to load changes.
+
+*Please find a working example in the notebooks folder* 
 
 ## Framework
 
