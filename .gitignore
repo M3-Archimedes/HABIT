@@ -177,5 +177,5 @@ cython_debug/
 .DS_Store
 *.csv
 *.pickle
-data/
+*.zip
 *.html
