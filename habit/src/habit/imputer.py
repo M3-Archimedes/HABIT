@@ -4,6 +4,7 @@ import networkx as nx
 import h3.api.numpy_int as h3
 from shapely import geometry
 from scipy.spatial import cKDTree
+#import numpy as np
 
 class HabitImputer:
     """
@@ -32,32 +33,55 @@ class HabitImputer:
         """Prepates the final query """
 
         where_clause = "" if len(self.excluded) == 0 else  f'where {self.id} not in ( {",".join(self.excluded)} )'
-        
+
         query=f"""
                 with
                     cte as (
                         select *, h3_latlng_to_cell({self.lat},{self.lon},{self.resolution}::INT) as h3 from read_csv('{self.path}'::STRING){where_clause} order by {self.t},{self.id} ASC),
                     tt as (
-                        select *,lag(h3) over (partition by {self.id} order by {self.t}) lag_h3 from cte)
+                        select *,lag(h3) over (partition by {self.id} order by {self.t}) lag_h3 from cte),
+                    nodes as (
+                        select h3,
+                            count(*) messages, 
+                            approx_count_distinct({self.id}) vessels, 
+                            approx_quantile({self.sog},0.5) sog,
+                            approx_quantile({self.cog},0.5) cog,
+                            approx_quantile({self.lat},0.5) mlat, 
+                            approx_quantile({self.lon},0.5) mlon  
+                            from tt group by h3
+                        ),
+                    edges as (
+                        select 
+                            CAST(lag_h3 AS BIGINT) lag_h3, 
+                            CAST(h3 AS BIGINT) h3, 
+                            approx_count_distinct({self.trip}) transitions,
+                            h3_grid_distance(lag_h3,h3) distance,
+                            'LINESTRING ('||list_aggregate(list_reverse(h3_cell_to_latlng(lag_h3)), 'string_agg', ' ') ||', '|| list_aggregate(list_reverse( h3_cell_to_latlng(h3)),'string_agg',' ') ||')' wkt
+                        from tt 
+                            where 
+                            lag_h3 != h3
+                            and lag_h3 is not null 
+                            and h3 is not null 
+                        group by 
+                            lag_h3,tt.h3      
+                    )
                     select 
-                        CAST(lag_h3 AS BIGINT) lag_h3, 
-                        CAST(h3 AS BIGINT) h3,  
-                        count() messages, 
-                        approx_count_distinct({self.id}) vessels, 
-                        approx_quantile({self.sog},0.5) sog, 
-                        approx_quantile({self.cog},0.5) cog, 
-                        approx_count_distinct({self.trip}) transitions,
-                        approx_quantile({self.lat},0.5) mlat, 
-                        approx_quantile({self.lon},0.5) mlon,
-                        h3_grid_distance(lag_h3,h3) distance,
-                        'LINESTRING ('||list_aggregate(list_reverse(h3_cell_to_latlng(lag_h3)), 'string_agg', ' ') ||', '|| list_aggregate(list_reverse( h3_cell_to_latlng(h3)),'string_agg',' ') ||')' wkt
-                    from tt 
+                        edges.lag_h3,
+                        edges.h3,
+                        nodes.messages,
+                        nodes.vessels,
+                        nodes.sog,
+                        nodes.cog,
+                        nodes.mlat,
+                        nodes.mlon,  
+                        edges.transitions, 
+                        edges.distance,
+                        edges.wkt
+                    from nodes, edges
                         where 
-                        lag_h3 is not null 
-                        and h3 is not null 
-                        and {self.cog} is not null
-                    group by 
-                        lag_h3,h3
+                        nodes.h3 = edges.h3 
+                        and lag_h3 is not null 
+                        and edges.h3 is not null 
                 """.replace("\n", " ").strip()
         return(query)
     
@@ -78,11 +102,24 @@ class HabitImputer:
         for n in nodes: 
             p1=h3.cell_to_latlng(n)[::-1]
 
-            filtered = df[df.h3.astype('int64') == n]
+
+            #alternativelly if we do not aggregate per cell and there are multiple records for the same cell, 
+            # we can use the one with the most transitions as the location of the node, since it is more likely to be accurate.
+            #filtered = duckdb.df[df.h3.astype('int64') == n].sort_values("transitions",ascending=False)
             
+            filtered = df[df.h3.astype('int64') == n]
+
+            
+
             if len(filtered) > 0:
+
+                #since the data is already aggregated by cell, we can use the median values for the cell as the location of the node.
                 mlon = filtered["mlon"].iloc[0]
                 mlat = filtered["mlat"].iloc[0]
+
+                #alternativelly if we do not aggregate per cell, we can use a weighted average
+                #mlon = np.average(filtered["mlon"],weights=filtered["transitions"])
+                #mlat = np.average(filtered["mlat"],weights=filtered["transitions"])
             else:
                 mlon = p1[0]
                 mlat = p1[1]
