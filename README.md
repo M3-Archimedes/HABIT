@@ -3,6 +3,7 @@
 
 HABIT Framework  provides a valuable means to impute the missing trajectory segments by extracting, analyzing, and indexing such patterns over historical AIS data.
 HABIT provides  an efficient, data-driven and scalable approach for gap imputation relying on spatial aggregates of AIS positional reports computed over H3 hexagon cells. 
+
 ## Installation 
 
 Pre-requisites:
@@ -27,6 +28,12 @@ HABIT is a data-driven and scalable approach for gap imputation in maritime traj
 - _Trajectory simplification_:A smoothing process is applied to the imputed trajectory to generate a realistic and navigable path.
 
 
+## Publication 
+
+Giannis Spiliopoulos, Alexandros Troupiotis-Kapeliaris, Kostas Patroumpas, Nikolaos Liapis, Dimitrios Skoutas, Dimitris Zissis, Nikos Bikakis
+[**Data-Driven Trajectory Imputation for Vessel Mobility Analysis**](https://arxiv.org/pdf/2602.11890), 29th International Conference on Extending Database Technology (EDBT 2026)
+
+<br>
 
 ## License
 
