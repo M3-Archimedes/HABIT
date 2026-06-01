@@ -29,7 +29,7 @@ HABIT is a data-driven and scalable approach for gap imputation in maritime traj
 
 
 
-<br>
+
 <br>
 
 
@@ -47,6 +47,15 @@ HABIT is a data-driven and scalable approach for gap imputation in maritime traj
 
 Giannis Spiliopoulos, Alexandros Troupiotis-Kapeliaris, Kostas Patroumpas, Nikolaos Liapis, Dimitrios Skoutas, Dimitris Zissis, Nikos Bikakis
 [**Data-Driven Trajectory Imputation for Vessel Mobility Analysis**](https://arxiv.org/pdf/2602.11890), 29th International Conference on Extending Database Technology (EDBT 2026)
+
+```bibtex
+@inproceedings{SpiliopoulosHABIT26,
+  author       = {Giannis Spiliopoulos and Alexandros Troupiotis{-}Kapeliaris and Kostas Patroumpas and Nikolaos Liapis and Dimitrios Skoutas and Dimitris Zissis and Nikos Bikakis},
+  title        = {{Data-Driven Trajectory Imputation for Vessel Mobility Analysis}},
+  booktitle    = {{International Conference on Extending Database Technology (EDBT)}},
+  year         = {2026}
+}
+```
 
 <br>
 
