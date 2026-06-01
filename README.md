@@ -28,6 +28,21 @@ HABIT is a data-driven and scalable approach for gap imputation in maritime traj
 - _Trajectory simplification_:A smoothing process is applied to the imputed trajectory to generate a realistic and navigable path.
 
 
+
+<br>
+<br>
+
+
+## Related GitHub Repositories 
+* [**IMGIN: Image-based Imputation of Trajectories**](https://github.com/M3-Archimedes/IMaGe-based-ImputatioN-of-Trajectories)
+* [**Context-Enriched Natural Language Descriptions of Vessel Trajectories**](https://github.com/M3-Archimedes/AIS-semantic-trajectories)
+* [**AIS Vessel Trajectory Annotation**](https://github.com/M3-Archimedes/AIS-trajectory-annotation)
+
+
+## Project 
+[**M3: Multimodal Foundation Models for the Maritime Domain Project**](https://github.com/M3-Archimedes)
+
+
 ## Publication 
 
 Giannis Spiliopoulos, Alexandros Troupiotis-Kapeliaris, Kostas Patroumpas, Nikolaos Liapis, Dimitrios Skoutas, Dimitris Zissis, Nikos Bikakis
